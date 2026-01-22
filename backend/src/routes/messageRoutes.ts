@@ -5,7 +5,7 @@ import { getMessages } from "../controllers/messageController"
 
 const router = Router()
 
-// Example route for sending a message
+// Get messages for a specific chat
 
 router.get("/chat/:chatId",protectRoute,getMessages)
 

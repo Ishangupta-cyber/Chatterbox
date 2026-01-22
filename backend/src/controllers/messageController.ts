@@ -12,10 +12,10 @@ export async function getMessages(req: AuthRequest, res: Response, next: NextFun
 
         // Logic to fetch messages for the given chatId and userId
 
-        const chat=await Chat.find({_id:chatId,participants:userId})
+       const chat=await Chat.find({_id:chatId,participants:userId})
         if(!chat.length){
             res.status(404)
-            throw new Error("Chat not found")
+            return next(new Error("Chat not found"))
         }
 
         // For Messages

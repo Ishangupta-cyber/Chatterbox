@@ -2,6 +2,7 @@
 import type { Response ,NextFunction} from "express";
 import type { AuthRequest } from "../middleware/auth";
 import { Chat } from "../models/Chat";
+import { User } from "../models/User";
 
 export async function getAllChats(req: AuthRequest, res: Response, next: NextFunction) {
   try {
@@ -36,9 +37,19 @@ export async function getAllChats(req: AuthRequest, res: Response, next: NextFun
 
 export async function createChatWithParticipant(req: AuthRequest, res: Response, next: NextFunction) {
   try {
-    
+
     const userId=req.userId
     const {participantId}=req.params
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    if (!participantId || participantId === userId) {
+      return res.status(400).json({ message: "Invalid participant" });
+    }
+    const participantExists = await User.exists({ _id: participantId });
+    if (!participantExists) {
+      return res.status(404).json({ message: "Participant not found" });
+    }
 
     // Check if chat already exists
     let chat = await Chat.findOne({

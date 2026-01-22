@@ -37,13 +37,18 @@ export async function authCallback(req:Request, res:Response,next:NextFunction) 
     let user=await User.findOne({clerkId});
     if (!user) {
       // If user does not exist, create a new user
-      const clerkUser=await  clerkClient.users.getUser(clerkId);
+      const clerkUser = await clerkClient.users.getUser(clerkId);
+      const primaryEmail = clerkUser.emailAddresses[0]?.emailAddress;
+      if (!primaryEmail) {
+        return res.status(400).json({ message: "Email address required" });
+      };
       user = await User.create({
         clerkId,
-        name:clerkUser.firstName ? `${clerkUser.firstName} ${clerkUser.lastName || ""}`.trim()
-         : clerkUser.emailAddresses[0]?.emailAddress.split("@")[0],
+        name: clerkUser.firstName
+        ? `${clerkUser.firstName} ${clerkUser.lastName || ""}`.trim()
+        : primaryEmail.split("@")[0],
          
-        email: clerkUser.emailAddresses[0]?.emailAddress,
+         email: primaryEmail,
         avatar: clerkUser.imageUrl
       })
     }

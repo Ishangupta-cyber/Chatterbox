@@ -31,4 +31,7 @@ const messageSchema = new Schema<IMessage>({
 },
   { timestamps: true });  
 
+
+messageSchema.index({ chat: 1, createdAt: 1 });
+
 export const Message = mongoose.model('Message', messageSchema);

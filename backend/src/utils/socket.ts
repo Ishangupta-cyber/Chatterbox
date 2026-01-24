@@ -18,8 +18,10 @@ export const initializeSocket = (httpServer: HttpServer) => {
   const allowedOrigins = [
 "http://localhost:8081", // Expo mobile
 "http://localhost:5173", // Vite web dev
-process.env.FRONTEND_URL as string, // production
-];
+process.env.FRONTEND_URL, // production
+].filter(Boolean) as string[]; // Remove undefined values
+
+
   const io = new SocketServer(httpServer, {cors:{origin:allowedOrigins}});
 
 
@@ -58,14 +60,17 @@ process.env.FRONTEND_URL as string, // production
 
   io.on("connection", (socket: SocketWithUserId) => {
     const userId = socket.userId;
-   
+    if(!userId){
+      socket.disconnect(true);
+      return;
+    }
+
+    // Add user to online users map first
+    onlineUsers.set(userId, socket.id);
+
     //send list of online user Ids to the newly connected user
     socket.emit("online-users",{userIds: Array.from(onlineUsers.keys())});
 
-    // Add user to online users map
-    if(userId){
-      onlineUsers.set(userId, socket.id);
-    }
 
     // Notify other users that this user is online
     socket.broadcast.emit("user-online", {userId});
@@ -84,7 +89,7 @@ process.env.FRONTEND_URL as string, // production
 
     //Handling Incoming Messages
 
-    socket.on("new-message", async (data: {chatId: string; text: any}) => {
+    socket.on("new-message", async (data: {chatId: string; text: string}) => {
       const {chatId, text} = data;
 
       try {
@@ -109,7 +114,7 @@ process.env.FRONTEND_URL as string, // production
 
         await chat.save(); // Save the updated chat
 
-        await message.populate('sender','name email avatar'); //populate sender details
+        await message.populate('sender','name avatar'); //populate sender details
 
         // Emit the message to all participants in the chat
         io.to(`chat:${chatId}`).emit("new-message", message);

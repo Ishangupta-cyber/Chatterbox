@@ -9,9 +9,10 @@ const PORT = process.env.PORT || 3000;
 const httpServer = http.createServer(app);
 
 
-initializeSocket(httpServer);
+
 
 connectDB().then(() => {
+  const io = initializeSocket(httpServer);
   httpServer.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });

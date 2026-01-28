@@ -1,7 +1,7 @@
 import "../global.css"
 import { Stack } from "expo-router"
 import {QueryClientProvider , QueryClient} from "@tanstack/react-query"
-import { ClerkLoaded, ClerkProvider } from '@clerk/clerk-expo'
+import {  ClerkProvider } from '@clerk/clerk-expo'
 import { tokenCache } from '@clerk/clerk-expo/token-cache'
 
 
@@ -11,7 +11,7 @@ export default function RootLayout() {
   return (
     <ClerkProvider publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!}
      tokenCache={tokenCache}>
-      <ClerkLoaded> {/* <--- Isse wrap karein taaki auth state load ho jaye */}
+     
         <QueryClientProvider client={queryClient}>
           <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="(tabs)" />
@@ -19,7 +19,7 @@ export default function RootLayout() {
             <Stack.Screen name="sso-callback" /> 
           </Stack>
         </QueryClientProvider>
-      </ClerkLoaded>
+    
     </ClerkProvider>
   );
 }

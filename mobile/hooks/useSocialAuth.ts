@@ -1,7 +1,6 @@
 import { useSSO } from "@clerk/clerk-expo";
 import { useState } from "react";
 import { Alert } from "react-native";
-import * as Linking from 'expo-linking'; // Ye import karein
 
 function useAuthSocial() {
   const [loadingStrategy, setLoadingStrategy] = useState<string | null>(null);
@@ -11,17 +10,10 @@ function useAuthSocial() {
     setLoadingStrategy(strategy);
 
     try {
-     // Ye URL Clerk ko batayega ki 'mobile://sso-callback' par vapas jao
-    const redirectUrl = Linking.createURL('/sso-callback', { scheme: 'mobile' });
-
-    const { createdSessionId, setActive } = await startSSOFlow({ 
-      strategy,
-      redirectUrl // <--- Ye pass karna compulsory hai
-    });
-
-    if (createdSessionId && setActive) {
-      await setActive({ session: createdSessionId });
-    }
+      const { createdSessionId, setActive } = await startSSOFlow({ strategy });
+      if (createdSessionId && setActive) {
+        await setActive({ session: createdSessionId });
+      }
     }
      catch (error) {
       console.log("* Error in social auth:", error);
@@ -37,5 +29,6 @@ function useAuthSocial() {
   };
     return { handleSocialAuth, loadingStrategy };
   };
+
 
 export default useAuthSocial;

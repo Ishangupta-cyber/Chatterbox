@@ -13,7 +13,6 @@ if (isSignedIn) {
   return <Redirect href="/(tabs)" />;
 }
 
-
 return <Stack screenOptions={{ headerShown: false }} />;
 }
 export default AuthLayout

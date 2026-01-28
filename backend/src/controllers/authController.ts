@@ -22,7 +22,7 @@ export async function getMe(req:AuthRequest, res:Response,next:NextFunction) {
   } catch (error) {
     console.error('Error fetching user details:', error);
      res.status(500)
-     next(error);
+     return next(error);
   }
 }
 

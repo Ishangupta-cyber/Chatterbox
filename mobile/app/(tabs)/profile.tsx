@@ -8,7 +8,9 @@ const ProfileTab = () => {
 
   const { signOut } = useAuth()
   const useUserData = useUser()
+
   console.log(useUserData)
+  
   return (
    <SafeAreaView className="flex-1 bg-surface">
        

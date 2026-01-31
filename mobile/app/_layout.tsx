@@ -12,9 +12,10 @@ export default function RootLayout() {
      tokenCache={tokenCache}>
       <ClerkLoaded> 
         <QueryClientProvider client={queryClient}>
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="(tabs)" />
-            <Stack.Screen name="(auth)" />
+          <Stack screenOptions={{ headerShown: false , contentStyle: { backgroundColor: 
+            "#1A1A1D" } }}>
+            <Stack.Screen name="(tabs)"  options={{animation:"none"}}/>
+            <Stack.Screen name="(auth)"  options={{animation:"none"}}/>
           </Stack>
         </QueryClientProvider>
       </ClerkLoaded>
